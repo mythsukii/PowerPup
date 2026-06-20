@@ -1038,6 +1038,44 @@ h1,h2,h3{font-family:'Poppins',sans-serif;margin:0;}
 .rose-bloom::after{inset:16px;}
 @keyframes roseSpin{0%{transform:rotate(0);}100%{transform:rotate(360deg);}}
 
+/* ---------- Auth Gate ---------- */
+#authGate{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(170deg,#FFF0FA 0%,#FBEAFB 55%,#F3E8FF 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 24px;
+}
+.ag-blob{
+  width:100px;height:94px;
+  background:linear-gradient(150deg,#FFC2E4 0%,#FF9DD2 55%,#E89BFF 100%);
+  border-radius:54% 46% 58% 42% / 60% 58% 42% 40%;
+  box-shadow:0 12px 28px rgba(255,133,200,.4);
+  animation:wobble 5s ease-in-out infinite;
+  margin-bottom:20px;position:relative;
+}
+.ag-blob .face{position:absolute;top:28px;left:0;right:0;}
+.ag-blob .eye{position:absolute;width:10px;height:14px;background:#4A2D48;border-radius:50%;top:0;}
+.ag-blob .eye.left{left:28px;}.ag-blob .eye.right{right:28px;}
+.ag-blob .mouth{position:absolute;top:20px;left:50%;transform:translateX(-50%);width:22px;height:10px;border-bottom:3px solid #4A2D48;border-radius:0 0 12px 12px;}
+.ag-title{font-family:'Poppins';font-weight:800;font-size:24px;color:#5A3D55;margin-bottom:6px;text-align:center;}
+.ag-sub{font-size:14px;font-weight:600;color:#A688A0;margin-bottom:28px;text-align:center;}
+.ag-input{
+  width:100%;max-width:320px;padding:16px 20px;
+  border:2px solid rgba(255,133,200,.4);border-radius:18px;
+  font-family:'Nunito';font-size:16px;font-weight:700;color:#5A3D55;
+  background:#fff;outline:none;text-align:center;letter-spacing:2px;
+  box-shadow:0 4px 16px rgba(255,133,200,.15);margin-bottom:14px;
+}
+.ag-input:focus{border-color:#FF85C8;}
+.ag-btn{
+  width:100%;max-width:320px;padding:16px;border:none;border-radius:18px;
+  background:linear-gradient(135deg,#FF85C8,#9B6DFF);color:#fff;
+  font-family:'Poppins';font-weight:800;font-size:16px;cursor:pointer;
+  box-shadow:0 8px 24px rgba(255,133,200,.4);transition:.2s;
+}
+.ag-btn:active{transform:scale(.97);}
+.ag-err{font-size:13px;font-weight:700;color:#E05080;margin-top:10px;min-height:18px;text-align:center;}
+
 /* ---------- Toast / notification ---------- */
 .toast-wrap{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 70px);z-index:90;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding:0 18px;}
 .toast{
@@ -2112,6 +2150,19 @@ h1,h2,h3{font-family:'Poppins',sans-serif;margin:0;}
 </style>
 </head>
 <body>
+<div id="authGate">
+  <div class="ag-blob">
+    <div class="face">
+      <div class="eye left"></div><div class="eye right"></div>
+      <div class="mouth"></div>
+    </div>
+  </div>
+  <div class="ag-title">Hey Laura! 💕</div>
+  <div class="ag-sub">Gib dein Passwort ein um loszulegen ✨</div>
+  <input class="ag-input" id="agInput" type="password" placeholder="Passwort…" maxlength="30">
+  <button class="ag-btn" id="agBtn">Los geht's 🌸</button>
+  <div class="ag-err" id="agErr"></div>
+</div>
 
 <div class="topbar">
   <div class="wrap topbar-inner">
@@ -2523,6 +2574,29 @@ h1,h2,h3{font-family:'Poppins',sans-serif;margin:0;}
   <button class="nav-btn" data-view="rewards"><span class="ni">🏆</span>Erfolge</button>
 </nav>
 
+<script>
+/* ===== AUTH ===== */
+(function(){
+  var PW = '#LaurusSaurus97';
+  var gate = document.getElementById('authGate');
+  if(localStorage.getItem('laura_auth') === '1'){ gate.style.display='none'; return; }
+  var inp = document.getElementById('agInput');
+  var btn = document.getElementById('agBtn');
+  var err = document.getElementById('agErr');
+  function check(){
+    if(inp.value === PW){
+      localStorage.setItem('laura_auth','1');
+      gate.style.display='none';
+    } else {
+      err.textContent = 'Falsches Passwort 🙈 Versuch nochmal!';
+      inp.value=''; inp.focus();
+      setTimeout(function(){ err.textContent=''; }, 2500);
+    }
+  }
+  btn.addEventListener('click', check);
+  inp.addEventListener('keydown', function(e){ if(e.key==='Enter') check(); });
+})();
+</script>
 <script>
 (function(){
 'use strict';
